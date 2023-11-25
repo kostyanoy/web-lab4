@@ -1,0 +1,38 @@
+form {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50px;
+    max-width: 400px;
+}
+input {
+    font-size: 25px;
+    font-family: Lato, Montserrat, sans-serif;
+    width: 400px;
+    padding: 8px;
+    margin-bottom: 16px;
+    box-sizing: border-box;
+}
+
+button {
+    font-size: 25px;
+    width: 400px;
+    font-family: Lato, Montserrat, sans-serif;
+    background-color: #6c5443;
+    color: white;
+    padding: 10px 15px;
+    margin-right: 8px;
+    display: block;
+    margin-bottom: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #886750;
+}
+
+div {
+    text-align: center;
+    margin-top: 50px;
+}

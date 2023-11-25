@@ -1,0 +1,15 @@
+.clock {
+    width: 300px;
+    height: 70px;
+    font-size: 30px;
+    color: #462904;
+    background-color: #d8c8bc;
+    border: 2px solid #744b05;
+    border-radius: 30px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    margin-top: 100px;
+    margin-left: auto;
+    margin-right: auto;
+    font-family: Lato, Montserrat, sans-serif;
+}
