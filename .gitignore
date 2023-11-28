@@ -8,3 +8,5 @@ gradle*
 
 # log
 *.log
+
+src/main/resources/application.properties
