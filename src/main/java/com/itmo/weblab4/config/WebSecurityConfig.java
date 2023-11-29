@@ -1,5 +1,8 @@
 package com.itmo.weblab4.config;
 
+import com.itmo.weblab4.handlers.AuthFailureHandler;
+import com.itmo.weblab4.handlers.AuthSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,6 +18,15 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+    private final AuthSuccessHandler authSuccessHandler;
+    private final AuthFailureHandler authFailureHandler;
+
+    public WebSecurityConfig(AuthSuccessHandler authSuccessHandler, AuthFailureHandler authFailureHandler) {
+        this.authSuccessHandler = authSuccessHandler;
+        this.authFailureHandler = authFailureHandler;
+    }
+
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -36,25 +48,13 @@ public class WebSecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                                .loginPage("/login")
-//                        .loginProcessingUrl("/login")
-                                .permitAll()
+                        .loginPage("/login")
+                        .successHandler(authSuccessHandler)
+                        .failureHandler(authFailureHandler)
+                        .permitAll()
                 )
-//                .rememberMe(withDefaults())
                 .logout(logout -> logout.permitAll().deleteCookies())
-//                .httpBasic(withDefaults())
                 .build();
-//        return http.
-//                authorizeHttpRequests((request) -> request
-//                        .requestMatchers("/", "/registration").permitAll()
-//                        .anyRequest().authenticated()
-//                )
-//                .formLogin((form) -> form
-//                        .loginPage("/login")
-//                        .permitAll()
-//                )
-//                .logout((logout) -> logout.permitAll())
-//                .build();
     }
 
     // for testing

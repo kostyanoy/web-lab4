@@ -9,11 +9,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService implements UserDetailsService {
-    private final PasswordEncoder encoder;
     private final UserRepository userRepository;
 
     public UserService(PasswordEncoder encoder, UserRepository userRepository) {
-        this.encoder = encoder;
         this.userRepository = userRepository;
     }
 
