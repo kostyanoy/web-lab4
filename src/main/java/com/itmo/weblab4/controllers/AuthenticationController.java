@@ -21,20 +21,14 @@ public class AuthenticationController {
         this.responseService = responseService;
     }
 
-    @PostMapping(value = "/registration")
+    @PostMapping(value = "/register")
     public ResponseEntity<ObjectNode> registerUser(@RequestBody RegistrationDTO body) {
         return authenticalService.registerUser(body.getUsername(), body.getPassword());
     }
 
     @GetMapping("/login")
-    public String login() {
-        return """
-                <form action="/login" method="post">
-                    <div><label> User Name : <input type="text" name="username"/> </label></div>
-                    <div><label> Password: <input type="password" name="password"/> </label></div>
-                    <div><input type="submit" value="Sign In"/></div>
-                </form>""";
-//        return authenticalService.fail();
+    public ResponseEntity<ObjectNode> login() {
+        return responseService.fail();
     }
 
     @GetMapping("/valid")
