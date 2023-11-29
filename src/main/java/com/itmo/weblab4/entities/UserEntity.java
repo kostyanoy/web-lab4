@@ -12,7 +12,7 @@ import java.util.Set;
 @Table(name = "user_web_lab4")
 @Data
 @AllArgsConstructor
-public class User implements UserDetails {
+public class UserEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -29,9 +29,9 @@ public class User implements UserDetails {
             joinColumns = {@JoinColumn(name = "user_id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id")}
     )
-    private Set<Role> authorities;
+    private Set<RoleEntity> authorities;
 
-    public User() {
+    public UserEntity() {
         authorities = new HashSet<>();
     }
 

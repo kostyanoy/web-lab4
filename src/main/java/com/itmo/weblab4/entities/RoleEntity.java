@@ -11,7 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role implements GrantedAuthority {
+public class RoleEntity implements GrantedAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Role implements GrantedAuthority {
     private Integer roleId;
     private String authority;
 
-    public Role(String authority) {
+    public RoleEntity(String authority) {
         this.authority = authority;
     }
 

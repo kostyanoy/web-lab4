@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itmo.weblab4.dto.RegistrationDTO;
 import com.itmo.weblab4.services.AuthenticalService;
+import com.itmo.weblab4.services.ResponseService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
     private final AuthenticalService authenticalService;
+    private final ResponseService responseService;
 
-    public AuthenticationController(AuthenticalService authenticalService, ObjectMapper mapper) {
+    public AuthenticationController(AuthenticalService authenticalService, ResponseService responseService) {
         this.authenticalService = authenticalService;
+        this.responseService = responseService;
     }
 
     @PostMapping(value = "/registration")
@@ -31,5 +34,11 @@ public class AuthenticationController {
                     <div><label> Password: <input type="password" name="password"/> </label></div>
                     <div><input type="submit" value="Sign In"/></div>
                 </form>""";
+//        return authenticalService.fail();
+    }
+
+    @GetMapping("/valid")
+    public ResponseEntity<ObjectNode> valid() {
+        return responseService.success();
     }
 }
