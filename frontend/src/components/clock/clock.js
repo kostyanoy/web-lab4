@@ -11,10 +11,8 @@ const Clock = () => {
     useEffect(() => {
         updateTime();
         const intervalId = setInterval(updateTime, 1000);
-
         return () => clearInterval(intervalId);
     }, []);
-
     return (
         <div className="clock">
             <div id="time">
@@ -23,5 +21,4 @@ const Clock = () => {
         </div>
     );
 };
-
 export default Clock;
