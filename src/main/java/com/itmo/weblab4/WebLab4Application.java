@@ -8,11 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -40,23 +36,4 @@ public class WebLab4Application {
             userRepository.save(admin);
         };
     }
-}
-
-@RestController
-class Controller {
-    @GetMapping(path = "/hello/{name}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public String hello_name(@PathVariable String name) {
-        return "Hello " + name + "!";
-    }
-
-    @GetMapping("/hello")
-    public String hello() {
-        return "Hello!";
-    }
-
-    @GetMapping("/")
-    public String mainPage() {
-        return "Main";
-    }
-
 }
