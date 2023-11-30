@@ -6,6 +6,7 @@ import com.itmo.weblab4.services.PointService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/points")
 public class PointsController {
