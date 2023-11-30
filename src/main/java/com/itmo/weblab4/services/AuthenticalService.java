@@ -30,7 +30,7 @@ public class AuthenticalService {
 
     public ResponseEntity<ObjectNode> registerUser(String username, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
-            return responseService.fail();
+            return responseService.fail("Username exists");
         }
 
         String encodedPassword = passwordEncoder.encode(password);
@@ -38,8 +38,12 @@ public class AuthenticalService {
         Set<RoleEntity> roles = new HashSet<>();
         roles.add(role);
 
-        userRepository.save(new UserEntity(0, username, encodedPassword, true, roles));
+        try {
+            userRepository.save(new UserEntity(0, username, encodedPassword, true, roles));
+            return responseService.success("Created user");
+        } catch (Exception e) {
+            return responseService.fail("Can't create user");
+        }
 
-        return responseService.success();
     }
 }

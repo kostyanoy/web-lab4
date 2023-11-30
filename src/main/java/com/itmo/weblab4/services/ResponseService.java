@@ -14,14 +14,20 @@ public class ResponseService {
         this.mapper = mapper;
     }
 
-    public ResponseEntity<ObjectNode> success() {
+    public ResponseEntity<ObjectNode> success(String message) {
         ObjectNode response = mapper.createObjectNode();
         response.put("success", true);
+        if (message != null) {
+            response.put("message", message);
+        }
         return ResponseEntity.ok(response);
     }
 
-    public ResponseEntity<ObjectNode> fail() {
+    public ResponseEntity<ObjectNode> fail(String message) {
         ObjectNode response = mapper.createObjectNode();
+        if (message != null) {
+            response.put("message", message);
+        }
         response.put("success", false);
         return ResponseEntity.badRequest().body(response);
     }

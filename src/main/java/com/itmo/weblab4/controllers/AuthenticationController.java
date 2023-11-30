@@ -1,6 +1,5 @@
 package com.itmo.weblab4.controllers;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itmo.weblab4.dto.RegistrationDTO;
 import com.itmo.weblab4.services.AuthenticalService;
@@ -28,11 +27,11 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public ResponseEntity<ObjectNode> login() {
-        return responseService.fail();
+        return responseService.fail("GET on /login is useless");
     }
 
     @GetMapping("/valid")
     public ResponseEntity<ObjectNode> valid() {
-        return responseService.success();
+        return responseService.success("Request valid");
     }
 }
