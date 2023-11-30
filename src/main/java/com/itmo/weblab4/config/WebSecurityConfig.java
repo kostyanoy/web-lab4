@@ -2,7 +2,6 @@ package com.itmo.weblab4.config;
 
 import com.itmo.weblab4.handlers.AuthFailureHandler;
 import com.itmo.weblab4.handlers.AuthSuccessHandler;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -44,7 +43,7 @@ public class WebSecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/", "/registration", "/login").permitAll()
+                        .requestMatchers("/", "/register", "/login").permitAll()
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
