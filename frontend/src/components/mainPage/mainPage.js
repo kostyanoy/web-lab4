@@ -41,7 +41,6 @@ const MainPage = () => {
                     </div>
                 </div>
                 <Inputs/>
-                <Buttons/>
             </div>
             <Table />
         </div>

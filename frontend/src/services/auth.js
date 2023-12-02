@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Cookies from 'js-cookie';
-import { URL } from './config';
 import $ from 'jquery';
-
 export function useAuth() {
     const [user, setUser] = useState(null);
     const [isAuthenticated, setAuthenticated] = useState(false);
+
     const register = (login, password) => {
         return $.ajax({
             url: 'http://localhost:8080/register',
@@ -15,50 +14,49 @@ export function useAuth() {
                 username: login,
                 password: password,
             }),
-            success: (data) => {
-                console.log('Registration successful:');
+            success: () => {
+                console.log('Registration successful');
             },
-            error: (jqXHR, textStatus, errorThrown) => {
+            error: (jqXHR, textStatus) => {
                 console.error('Registration failed. Status:', textStatus);
-                throw errorThrown;
+            }
+        });
+    };
+
+    const login = (login, password) => {
+        return $.ajax({
+            url: 'http://localhost:8080/login',
+            type: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            },
+            data: {
+                username: login,
+                password: password,
+            },
+            withCredentials: true,
+            success: (response) => {
+                console.log('Login successful:', response);
+                setUser(response.user);
+                setAuthenticated(true);
+            },
+            error: (jqXHR, textStatus) => {
+                console.error('Login failed. Status:', textStatus);
             }
         });
     };
 
 
-    const login = async (login, password) => {
-        try {
-            const response = await fetch(`${URL}/login`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-                },
-                body: `username=${login}&password=${password}`,
-                credentials: 'include',
-            });
-
-            const data = await response.json();
-            if (data.success) {
-                Cookies.set('user', JSON.stringify(data.user));
-                setUser(data.user);
-                setAuthenticated(true);
-            }
-
-            return data;
-        } catch (error) {
-            console.error('Login failed.');
-            throw error;
-        }
-    };
-
     const logout = async () => {
         try {
-            await fetch(`${URL}/logout`, {
+            await fetch('http://localhost:8080/logout', {
                 method: 'POST',
                 credentials: 'include',
             });
 
             Cookies.remove('user');
+
+            // Сбрасываем информацию о пользователе и статусе аутентификации
             setUser(null);
             setAuthenticated(false);
         } catch (error) {

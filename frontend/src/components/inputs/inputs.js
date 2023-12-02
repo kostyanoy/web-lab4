@@ -1,4 +1,6 @@
 import React, {useState, useEffect} from 'react';
+import { setX, setY, setR, sendPoint} from '../../redux/actions/pointsActions';
+
 import {
     StyledFormControl,
     StyledFormLabel,
@@ -8,11 +10,31 @@ import {
     Container,
     StyledTextField
 } from './inputsStyles';
+import {useDispatch} from "react-redux";
 
 const Inputs = () => {
     const [selectedR, setSelectedR] = useState('0');
     const [error, setError] = useState(null);
+    const dispatch = useDispatch();
 
+    const handleXChange = (event) => {
+        dispatch(setX(event.target.value));
+    };
+
+    const handleYChange = (event) => {
+        dispatch(setY(event.target.value));
+    };
+
+    const handleRChange = (event) => {
+        const rNum = event.target.value;
+        if (!isNaN(rNum)) {
+            setSelectedR(rNum);
+            dispatch(setR(event.target.value));
+            setError(null);
+        } else {
+            setError('Invalid R value');
+        }
+    };
     useEffect(() => {
         const svg = document.querySelector('svg');
         const setRound = (cx, cy) => {
@@ -50,30 +72,24 @@ const Inputs = () => {
             svg.removeEventListener("click", drawPoint);
         };
     }, [selectedR]);
-
-    const handleRChange = (event) => {
-        const rNum = event.target.value;
-        if (!isNaN(rNum)) {
-            setSelectedR(rNum);
-            setError(null);
-        } else {
-            setError('Invalid R value');
-        }
+    const handleSubmit = () => {
+        dispatch(sendPoint());
     };
+
     return (
         <Container>
             <StyledFormControl>
                 <StyledFormLabel component="legend">X: </StyledFormLabel>
                 <StyledRadioGroup aria-label="x" name="x">
                     {['-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2'].map((value) => (
-                        <StyledFormControlLabel key={value} value={value} control={<StyledRadio/>} label={value}/>
+                        <StyledFormControlLabel key={value} value={value} control={<StyledRadio/>} label={value} onChange={handleXChange}/>
                     ))}
                 </StyledRadioGroup>
             </StyledFormControl>
 
             <StyledFormControl>
                 <StyledFormLabel component="legend">Y: </StyledFormLabel>
-                <StyledTextField type="number" placeholder={'-5..3'}
+                <StyledTextField type="number" placeholder={'-5..3'} onChange={handleYChange}
                                  InputProps={{
                                      inputProps: {
                                          min: -5,
@@ -92,6 +108,7 @@ const Inputs = () => {
                     ))}
                 </StyledRadioGroup>
             </StyledFormControl>
+            <button onClick={handleSubmit}>Отправить точку</button>
         </Container>
     );
 };

@@ -7,8 +7,8 @@ const Buttons = () => {
         <div>
             <form>
                 <Container>
-                        <StyledButton type="button" onClick={}>Login</StyledButton>
-                        <StyledButton type="button" onClick={}>Register</StyledButton>
+                        <StyledButton type="button" >Login</StyledButton>
+                        <StyledButton type="button">Register</StyledButton>
                 </Container>
             </form>
         </div>
