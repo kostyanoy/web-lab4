@@ -8,7 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PointRepository extends JpaRepository<PointEntity, Integer> {
+    List<PointEntity> findAllByUserIdAndIsDeleted(Integer userId, boolean isDeleted);
     List<PointEntity> findAllByUserIdAndRAndIsDeleted(Integer userId, double r, boolean isDeleted);
-    List<PointEntity> findAllByUserId(Integer userId);
-
 }

@@ -31,8 +31,15 @@ public class PointService {
 
     public ResponseEntity<ObjectNode> getPoints(double r) {
         try {
-            List<PointDTO> points = pointRepository
-                    .findAllByUserIdAndRAndIsDeleted(getCurrentUserId(), r, false)
+            Integer userId = getCurrentUserId();
+
+
+            List<PointEntity> pointEntities = (r <= 0) ?
+                    pointRepository.findAllByUserIdAndIsDeleted(userId, false) :
+                    pointRepository.findAllByUserIdAndRAndIsDeleted(userId, r, false);
+
+
+            List<PointDTO> points = pointEntities
                     .stream()
                     .map(p -> new PointDTO(p.getX(), p.getY(), p.getR(), p.isResult(), p.getCheckDate()))
                     .toList();
@@ -58,7 +65,7 @@ public class PointService {
 
     public ResponseEntity<ObjectNode> resetPoints() {
         try {
-            List<PointEntity> points = pointRepository.findAllByUserId(getCurrentUserId());
+            List<PointEntity> points = pointRepository.findAllByUserIdAndIsDeleted(getCurrentUserId(), false);
             points.forEach(p -> p.setDeleted(true));
             pointRepository.saveAll(points);
             return responseService.success("Marked points to delete");
