@@ -1,71 +1,63 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Cookies from 'js-cookie';
-import $ from 'jquery';
+import axios from 'axios';
+
 export function useAuth() {
-    const [user, setUser] = useState(null);
     const [isAuthenticated, setAuthenticated] = useState(false);
-
-    const register = (login, password) => {
-        return $.ajax({
-            url: 'http://localhost:8080/register',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                username: login,
-                password: password,
-            }),
-            success: () => {
-                console.log('Registration successful');
-            },
-            error: (jqXHR, textStatus) => {
-                console.error('Registration failed. Status:', textStatus);
-            }
-        });
+    const handleAuthentication = (status) => {
+        setAuthenticated(status);
     };
 
-    const login = (login, password) => {
-        return $.ajax({
-            url: 'http://localhost:8080/login',
-            type: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            },
-            data: {
-                username: login,
-                password: password,
-            },
-            withCredentials: true,
-            success: (response) => {
-                console.log('Login successful:', response);
-                setUser(response.user);
-                setAuthenticated(true);
-            },
-            error: (jqXHR, textStatus) => {
-                console.error('Login failed. Status:', textStatus);
-            }
-        });
+    const register = async (login, password) => {
+        try {
+            const response = await axios.post(
+                'http://localhost:8080/register',
+                {
+                    username: login,
+                    password: password,
+                }
+            );
+            console.log('Registration successful');
+        } catch (error) {
+            console.error('Registration failed.');
+        }
     };
-
-
+    const login = async (login, password) => {
+        try {
+            const response = await axios.post(
+                'http://localhost:8080/login',
+                new URLSearchParams({
+                    username: login,
+                    password: password,
+                }).toString(),
+                {
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                    },
+                    withCredentials: true,
+                }
+            );
+            console.log('Login successful');
+            handleAuthentication(true);
+        } catch (error) {
+            console.error('Login failed.');
+            handleAuthentication(false);
+            throw error;
+        }
+    };
     const logout = async () => {
         try {
-            await fetch('http://localhost:8080/logout', {
-                method: 'POST',
-                credentials: 'include',
+            await axios.post('http://localhost:8080/logout', null, {
+                withCredentials: true,
             });
-
             Cookies.remove('user');
-
-            // Сбрасываем информацию о пользователе и статусе аутентификации
-            setUser(null);
             setAuthenticated(false);
         } catch (error) {
             console.error('Failed to logout:', error);
         }
     };
-
     return {
-        user,
+        setAuthenticated,
         isAuthenticated,
         register,
         login,

@@ -1,5 +1,5 @@
 import { styled } from '@mui/material/styles';
-import { FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField } from '@mui/material';
+import {FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, TextField, Button} from '@mui/material';
 
 export const Container = styled('div')`
   font-size: 25px;
@@ -76,4 +76,39 @@ export const StyledTextField = styled(TextField)`
     &.Mui-focused fieldset {
       border-color: #462904;
     }
+`;
+export const StyledButton = styled(Button)`
+  font-family: Lato, Montserrat, sans-serif;
+  color: #d8c8bc;
+  background-color: #462904;
+  font-weight: bold;
+  width: 100%; /* Ширина в процентах */
+  max-width: 80%; /* Пример значения в процентах */
+  font-size: 16px;
+  margin-bottom: 10px;
+
+  @media (min-width: 1255px) {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  @media (min-width: 814px) and (max-width: 1254px) {
+    font-size: 14px;
+    margin-bottom: 7px;
+  }
+
+  @media screen and (max-width: 814px) {
+    font-size: 12px;
+    margin-bottom: 5px;
+  }
+
+  &:hover {
+    background-color: #d8c8bc;
+    color: #462904;
+  }
+
+  &:active {
+    background-color: #d8c8bc;
+    color: #462904;
+  }
 `;

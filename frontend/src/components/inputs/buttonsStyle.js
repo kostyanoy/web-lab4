@@ -14,7 +14,7 @@ export const StyledButton = styled(Button)`
   background-color: #462904;
   font-size: 16px;
   font-weight: bold;
-  margin-right: 10px; /* Добавим отступ между кнопками */
+  margin-right: 10px; 
   &:hover {
     background-color: #d8c8bc;
     color: #462904;

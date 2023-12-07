@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-import { TextFieldStyle } from "./loginStyles";
-import { StyledButton } from "./loginStyles";
-import { Container } from "./loginStyles";
+import { useNavigate } from "react-router-dom";
+import { Container, ButtonContainer, StyledButton, TextFieldStyle, Message } from "./loginStyles";
 import { useAuth } from "../../services/auth";
-import "./login.css";
 
-const Login = ({ onLoginSuccess }) => {
-    const [username, setLogin] = useState("");
+const Login = () => {
+    const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+    const [message, setMessage] = useState("");
+    const navigate = useNavigate();
     const auth = useAuth();
 
     const handleLoginChange = (e) => {
         const value = e.target.value;
         if (/^[a-zA-Z0-9.@]+$/.test(value) || value === "") {
-            setLogin(value);
+            setUsername(value);
         }
     };
 
@@ -28,25 +27,25 @@ const Login = ({ onLoginSuccess }) => {
     const handleLogin = async (e) => {
         e.preventDefault();
         if (!username || !password) {
-            setError("Вы не заполнили все поля");
+            setMessage("Вы не заполнили все поля");
         } else {
             try {
                 await auth.login(username, password);
-                onLoginSuccess();
+                navigate("/main");
             } catch (error) {
-                setError("Ошибка при входе");
+                setMessage("Ошибка при входе");
             }
         }
     };
-
     const handleRegister = async () => {
         if (!username || !password) {
-            setError("Вы не заполнили все поля");
+            setMessage("Вы не заполнили все поля");
         } else {
             try {
                 await auth.register(username, password);
+                setMessage("Вы успешно зарегестрировались");
             } catch (error) {
-                setError("Ошибка при регистрации");
+                setMessage("Пользователь уже зарегистрирован");
             }
         }
     };
@@ -55,7 +54,6 @@ const Login = ({ onLoginSuccess }) => {
         <div>
             <form onSubmit={handleLogin}>
                 <Container>
-                    <div className="textFieldContainer">
                         <TextFieldStyle
                             type="text"
                             value={username}
@@ -63,7 +61,7 @@ const Login = ({ onLoginSuccess }) => {
                             label="Username"
                             variant="outlined"
                         />
-                        <br />
+                        <br/>
                         <TextFieldStyle
                             type="password"
                             value={password}
@@ -71,18 +69,15 @@ const Login = ({ onLoginSuccess }) => {
                             label="Password"
                             variant="outlined"
                         />
-                    </div>
-                    <br />
-                    <div className="buttonContainer">
+                    <br/>
+                    <ButtonContainer>
                         <StyledButton type="submit">Login</StyledButton>
-                        <StyledButton type="button" onClick={handleRegister}>
-                            Register
-                        </StyledButton>
-                    </div>
+                        <StyledButton type="button" onClick={handleRegister}>Register</StyledButton>
+                    </ButtonContainer>
                 </Container>
             </form>
+            {message && <Message>{message}</Message>}
         </div>
     );
 };
-
 export default Login;

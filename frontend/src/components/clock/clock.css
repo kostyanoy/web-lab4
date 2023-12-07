@@ -1,16 +1,49 @@
 .clock {
-    width: 180px;
-    height: 50px;
     text-align: center;
-    font-size: 30px;
     color: #462904;
     background-color: #d8c8bc;
     border: 2px solid #744b05;
-    border-radius: 40px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    padding: 20px;
-    margin-top: 70px;
     margin-left: auto;
     margin-right: auto;
     font-family: Lato, Montserrat, sans-serif;
+    width: 160px;
+    height: 50px;
+    font-size: 35px;
+    margin-top: 65px;
+    border-radius: 50px;
+    padding: 20px;
+}
+/* Десктопный режим */
+@media (min-width: 1255px) {
+    .clock {
+        width: 130px;height: 40px;
+        font-size: 30px;
+        margin-top: 130px;
+        border-radius: 50px;
+        padding: 20px;
+    }
+}
+/* Планшетный режим */
+@media (min-width: 814px) and (max-width: 1254px) {
+    .clock {
+        width: 120px;
+        height: 40px;
+        font-size: 30px;
+        margin-top: 270px;
+        border-radius: 50px;
+        padding: 20px;
+    }
+}
+
+/* Мобильный режим */
+@media (max-width: 814px) {
+    .clock {
+        width: 100px;
+        height: 30px;
+        font-size: 25px;
+        margin-top: 180px;
+        border-radius: 50px;
+        padding: 20px;
+    }
 }

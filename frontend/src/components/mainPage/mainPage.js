@@ -2,7 +2,6 @@ import React from 'react';
 import './mainPage.css';
 import Inputs from "../inputs/inputs";
 import Table from "../table/table";
-import Buttons from "../inputs/buttons"
 const MainPage = () => {
 
     return (

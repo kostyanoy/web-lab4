@@ -6,6 +6,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/material": "^5.14.18",
+    "@mui/system": "^5.14.20",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.1",
@@ -20,6 +21,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-redux": "^8.1.3",
+    "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
@@ -27,7 +29,7 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "react-scripts start --no-optimizations",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"

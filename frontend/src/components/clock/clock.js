@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './clock.css';
-
 const Clock = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
-
     const updateTime = () => {
         setCurrentTime(new Date());
     };
