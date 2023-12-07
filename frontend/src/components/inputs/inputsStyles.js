@@ -82,8 +82,8 @@ export const StyledButton = styled(Button)`
   color: #d8c8bc;
   background-color: #462904;
   font-weight: bold;
-  width: 100%; /* Ширина в процентах */
-  max-width: 80%; /* Пример значения в процентах */
+  width: 100%;
+  max-width: 80%; 
   font-size: 16px;
   margin-bottom: 10px;
 

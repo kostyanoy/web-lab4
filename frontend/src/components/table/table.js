@@ -7,16 +7,10 @@ const PointsTable = ({ points }) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        // Обработчик события onload
         const handleLoad = () => {
-            // Вызываем getPoints при загрузке страницы
             dispatch(getPoints(0));
         };
-
-        // Добавляем обработчик события onload
         window.addEventListener('load', handleLoad);
-
-        // Очищаем обработчик при размонтировании компонента
         return () => {
             window.removeEventListener('load', handleLoad);
         };
