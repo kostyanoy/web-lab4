@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ResponseService {
+public class ResponseService implements ResponseServiceInterface {
 
     private final ObjectMapper mapper;
 
@@ -14,6 +14,7 @@ public class ResponseService {
         this.mapper = mapper;
     }
 
+    @Override
     public ResponseEntity<ObjectNode> success(String message) {
         ObjectNode response = mapper.createObjectNode();
         response.put("success", true);
@@ -23,6 +24,7 @@ public class ResponseService {
         return ResponseEntity.ok(response);
     }
 
+    @Override
     public ResponseEntity<ObjectNode> fail(String message) {
         ObjectNode response = mapper.createObjectNode();
         if (message != null) {

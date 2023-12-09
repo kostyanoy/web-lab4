@@ -15,19 +15,20 @@ import java.util.Set;
 
 @Service
 @Transactional
-public class AuthenticalService {
-    private final ResponseService responseService;
+public class AuthenticalService implements AuthenticalServiceInterface {
+    private final ResponseServiceInterface responseService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticalService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ResponseService responseService) {
+    public AuthenticalService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ResponseServiceInterface responseService) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.responseService = responseService;
     }
 
+    @Override
     public ResponseEntity<ObjectNode> registerUser(String username, String password) {
         if (userRepository.findByUsername(username).isPresent()) {
             return responseService.fail("Username exists");
