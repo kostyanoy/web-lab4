@@ -2,6 +2,7 @@ package com.itmo.weblab4.services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.itmo.weblab4.annotations.ExecutionTimeMeasured;
 import com.itmo.weblab4.dto.PointDTO;
 import com.itmo.weblab4.entities.PointEntity;
 import com.itmo.weblab4.repos.PointRepository;
@@ -30,6 +31,7 @@ public class PointService implements PointServiceInterface {
     }
 
     @Override
+    @ExecutionTimeMeasured
     public ResponseEntity<ObjectNode> getPoints(double r) {
         try {
             Integer userId = getCurrentUserId();
