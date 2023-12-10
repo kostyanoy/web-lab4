@@ -7,8 +7,8 @@ const MainPage = () => {
     return (
         <div>
             <div className="window">
-                <div id="coordinatePanelWrapper" style={{ position: 'relative', marginTop: '10px', marginLeft: '180px' }}>
-                    <div id="coordinatePanel" style={{ position: 'absolute', width: '400px', height: '400px' }}>
+                <div id="coordinatePanelWrapper" style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start'}}>
+                    <div id="coordinatePanel" style={{ position: 'relative', width: '400px', height: '400px', textAlign: 'center' }}>
                         <svg width="400" height="400">
                             <line x1="0" y1="200" x2="400" y2="200" style={{ stroke: 'black', strokeWidth: 2 }} />
                             <line x1="200" y1="0" x2="200" y2="400" style={{ stroke: 'black', strokeWidth: 2 }} />

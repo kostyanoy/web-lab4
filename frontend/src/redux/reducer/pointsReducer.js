@@ -2,18 +2,18 @@ const initialState = {
     x: null,
     y: null,
     r: '0',
-    ERROR: "",
     points: [],
+    pointsForTable: [],
 };
 
 const pointReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SET_X':
-            return {...state, x: action.payload};
+            return {...state, x: action.payload.x};
         case 'SET_Y':
-            return {...state, y: action.payload};
+            return {...state, y: action.payload.y};
         case 'SET_R':
-            return {...state, r: action.payload};
+            return {...state, r: action.payload.r};
         case 'ADD_POINTS':
             return {
                 ...state,
@@ -21,8 +21,8 @@ const pointReducer = (state = initialState, action) => {
             };
         case 'GET_POINTS_SUCCESS':
             return { ...state, points: action.payload.points };
-        case 'ERROR':
-            return {...state, ERROR: action.payload};
+        case 'GET_POINTS_FOR_TABLE_SUCCESS':
+            return { ...state, pointsForTable: action.payload.points };
         case 'RESET_ALL_POINTS':
             return {...state};
         default:

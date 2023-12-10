@@ -8,21 +8,21 @@ export const Container = styled('div')`
   margin-left: auto;
   margin-right: auto;
   margin-top: 60px;
-  width: 50%; 
+  width: 40%; 
 
   @media (min-width: 1255px) {
-    width: 50%;
+    width: 35%;
     margin-top: 60px;
   }
 
   @media (min-width: 814px) and (max-width: 1254px) {
-    width: 70%;
-    margin-top: 100px;
+    width: 60%;
+    margin-top: 80px;
   }
 
   @media screen and (max-width: 814px) {
-    width: 85%;
-    margin-top: 120px;
+    width: 70%;
+    margin-top: 40px;
   }
 `;
 
@@ -55,6 +55,8 @@ export const TextFieldStyle = styled(TextField)`
 export const ButtonContainer = styled(`div`)`
   display: flex;
   flex-direction: column;
+  width: 100%;
+
 `;
 
 export const StyledButton = styled(Button)`
@@ -105,7 +107,7 @@ export const Message = styled('div')`
   
   @media (min-width: 1255px) {
     border-radius: 6px;
-    margin-top: 25px;
+    margin-top: 15px;
     padding: 10px;
   }
 

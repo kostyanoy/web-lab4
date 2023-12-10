@@ -17,11 +17,13 @@ export function useAuth() {
                     password: password,
                 }
             );
-            console.log('Registration successful');
+            console.log('Registration successful', response.data);
         } catch (error) {
-            console.error('Registration failed.');
+            console.error('Registration failed.', error);
+            throw error;
         }
     };
+
     const login = async (login, password) => {
         try {
             const response = await axios.post(
@@ -29,7 +31,7 @@ export function useAuth() {
                 new URLSearchParams({
                     username: login,
                     password: password,
-                }).toString(),
+                }),
                 {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
@@ -37,17 +39,16 @@ export function useAuth() {
                     withCredentials: true,
                 }
             );
-            console.log('Login successful');
+            console.log('Login successful', response.data);
             handleAuthentication(true);
         } catch (error) {
-            console.error('Login failed.');
-            handleAuthentication(false);
+            console.error('Login failed.', error);
             throw error;
         }
     };
     const logout = async () => {
         try {
-            await axios.post('http://localhost:8080/logout', null, {
+            await axios.post('http://localhost:8080/logout', {
                 withCredentials: true,
             });
             Cookies.remove('user');
@@ -56,11 +57,11 @@ export function useAuth() {
             console.error('Failed to logout:', error);
         }
     };
+
     return {
         setAuthenticated,
         isAuthenticated,
         register,
-        login,
-        logout,
+        login, logout,
     };
 }

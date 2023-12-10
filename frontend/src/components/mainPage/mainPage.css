@@ -3,11 +3,44 @@
     border: 2px solid #744b05;
     text-align: center;
     float: left;
-    width: 800px;
-    height: 800px;
-    margin-top: 70px;
-    margin-left: 40px;
+    width: 45%;
+    min-width: 400px;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
     background-color: #886750;
-    padding: 10px;
+    padding: 5px;
     border-radius: 10px;
+}/* Десктопный режим */
+@media (min-width: 1255px) {
+    .window {
+        width: 45%;
+        min-width: 400px;
+        margin-top: 20px;
+        margin-left: 20px;
+        margin-right: 20px;
+        padding: 5px;
+    }
+}
+/* Планшетный режим */
+@media (min-width: 814px) and (max-width: 1254px) {
+    .window {
+        width: 90%;
+        min-width: 400px;
+        margin-top: 10px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+/* Мобильный режим */
+@media (max-width: 814px) {
+    .window {
+        width: 90%;
+        min-width: 400px;
+        margin-top: 5px;
+        margin-left: auto;
+        margin-right: auto;
+
+    }
 }

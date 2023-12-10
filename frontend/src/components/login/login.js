@@ -74,9 +74,9 @@ const Login = () => {
                         <StyledButton type="submit">Login</StyledButton>
                         <StyledButton type="button" onClick={handleRegister}>Register</StyledButton>
                     </ButtonContainer>
+                    {message && <Message>{message}</Message>}
                 </Container>
             </form>
-            {message && <Message>{message}</Message>}
         </div>
     );
 };

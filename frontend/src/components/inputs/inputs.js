@@ -1,5 +1,13 @@
 import {connect, useDispatch} from "react-redux";
-import {setX, setY, setR, sendPoints, resetPoints, getPoints} from "../../redux/actions/pointsActions";
+import {
+    setX,
+    setY,
+    setR,
+    sendPoints,
+    resetPoints,
+    getPoints,
+    getPointsForTable
+} from "../../redux/actions/pointsActions";
 import {
     StyledFormControl,
     StyledFormLabel,
@@ -8,98 +16,119 @@ import {
     StyledRadio,
     Container,
     StyledTextField,
-    StyledButton
-} from './inputsStyles';
-import {useEffect} from "react";
+    StyledButton,
+    Message,
+} from "./inputsStyles";
+import React, {useEffect, useState} from "react";
 import {useAuth} from "../../services/auth";
 import {useNavigate} from "react-router-dom";
 
 const Inputs = (props) => {
-    const {x, y, r, ERROR} = props;
+    const {x, y, r, points} = props;
+    const [message, setMessage] = useState("");
+    const [isRadiusSelected, setIsRadiusSelected] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const auth = useAuth();
+    useEffect(() => {
+        updateSVG();
+    }, [points]);
     const handleXChange = (event) => {
-        dispatch(setX(event.target.value));
+        if (event.target.value === "") {
+            setMessage("Вы не выбрали R!!!");
+        } else {
+            dispatch(setX(event.target.value));
+            setMessage("");
+        }
     };
     const handleYChange = (event) => {
-        dispatch(setY(event.target.value));
+        const Y = event.target.value;
+        if (isNaN(Y) || Y < -5 || Y > 3 || Y === "") {
+            setMessage("Y должен быть числом в интервале от -5 до 3");
+            dispatch(setY(null));
+        } else {
+            setMessage("");
+            dispatch(setY(Y));
+        }
     };
-    const handleRChange = (event) => {
-        const newR = event.target.value;
-        dispatch(setR(newR));
-        changeR(newR);
-        dispatch(getPoints(x, y, newR));
+
+    const handleRChange = async (event) => {
+        if (event.target.value === "") {
+            setMessage("Вы не выбрали R!!!");
+        } else {
+            dispatch(setR(event.target.value));
+            changeR(event.target.value);
+            setIsRadiusSelected(true);
+            await dispatch(getPoints(parseFloat(event.target.value)));
+            setMessage("");
+        }
+    };
+    const handleSubmit = async () => {
+        try {
+            if (!x || !y || !r) {
+                setMessage("Заполните все поля перед отправкой.");
+                return;
+            }
+            dispatch(sendPoints(x, y, r));
+            dispatch(getPoints(r));
+            dispatch(getPointsForTable());
+            setMessage("");
+        } catch (error) {
+            console.error("Упс:", error);
+        }
+    };
+    const updateSVG = () => {
         clearSVG();
-    };
-    const handleLogout = async () => {
-            await auth.logout();
-            navigate("/");
-    };
-    const handleSubmit = () => {
-        dispatch(sendPoints(x, y, r));
-        dispatch(getPoints(r));
-        calculator(x, y, r);
+        points.forEach((point) => {
+            const { x, y, r } = point;
+            calculator(x, y, r);
+        });
     };
     const handleDelete = () => {
         dispatch(resetPoints());
-        dispatch(getPoints(0));
         clearSVG();
+        setMessage("Точки удалены");
+        window.location.reload();
+    };
+    const handleLogout = async () => {
+        await auth.logout();
+        navigate("/");
+    };
+    let flag;
+    function check(x, y, r) {
+        flag = (x >= 0 && y <= 0 && x <= r / 2 && y >= -r / 2 && x+y>=-r/2) ||
+            (x <= 0 && y <= 0 && x >= -r && y >= -r) ||
+            (x >= 0 && y >= 0 && x <= r/2 && y <= r/2 && (Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r/2, 2)));
     }
 
-    const calculator = (x, y, r) => {
-        const svg = document.querySelector('svg');
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        const width = 400;
-        const height = 400;
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const cx = centerX + x * (width / (3.3 * r));
-        const cy = centerY - y * (height / (3.3 * r));
-        setRound(cx, cy);
-        svg.appendChild(circle);
-    };
-
-    function clearSVG() {
-        const svg = document.querySelector('svg');
-        const circles = svg.querySelectorAll("circle");
-        circles.forEach(circle => {
-            svg.removeChild(circle);
-        });
-    }
-
-    const setRound = (cx, cy) => {
-        const svg = document.querySelector('svg');
-        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-        circle.setAttribute("cx", cx);
-        circle.setAttribute("cy", cy);
-        circle.setAttribute("r", '5');
-        circle.setAttribute("fill", "beige");
-        svg.appendChild(circle);
-    };
     useEffect(() => {
-        const svg = document.querySelector('svg');
+        const svg = document.querySelector("svg");
         const getXY = (svg, event) => {
             const rect = svg.getBoundingClientRect();
-            return {x: event.clientX - rect.left, y: event.clientY - rect.top};
+            return { x: event.clientX - rect.left, y: event.clientY - rect.top };
         };
-
         let xPoint, yPoint;
 
-        const drawPoint = (event) => {
+        const drawPoint = async (event) => {
+            if (!isRadiusSelected) {
+                setMessage("А кто радиус выбирать будет?!");
+                return;
+            }
             let radius = r;
             const point = getXY(svg, event);
             xPoint = point.x;
             yPoint = point.y;
-            console.log(xPoint, yPoint);
             const tempX = point.x - 200;
             const tempY = 200 - point.y;
             const temp = 120 / radius;
             const newX = (tempX / temp).toFixed(1);
             const newY = (tempY / temp).toFixed(1);
-            console.log(newX, newY)
-            setRound(xPoint, yPoint);
+            check(xPoint, yPoint, radius);
+            setRound(xPoint, yPoint, flag);
+            dispatch(setX(newX));
+            dispatch(setY(newY));
             dispatch(sendPoints(newX, newY, radius));
+            dispatch(getPointsForTable());
         };
 
         svg.addEventListener("click", drawPoint);
@@ -107,18 +136,52 @@ const Inputs = (props) => {
         return () => {
             svg.removeEventListener("click", drawPoint);
         };
-    }, [r]);
+    }, [r, isRadiusSelected, check, dispatch, flag, y]);
 
+    const calculator = (x, y, r) => {
+        const width = 400;
+        const height = 400;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const cx = centerX + x * (width / (3.3 * r));
+        const cy = centerY - y * (height / (3.3 * r));
+        console.log('Calculator - cx, cy:', cx, cy);
+        check(x, y, r);
+        setRound(cx, cy, flag);
+    }
+    const setRound = (cx, cy, flag) => {
+        const svg = document.querySelector("svg");
+        const circle = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "circle"
+        );
+        circle.setAttribute("cx", cx);
+        circle.setAttribute("cy", cy);
+        circle.setAttribute("r", "5");
+        if (flag) {
+            circle.setAttribute("fill", "beige");
+        } else {
+            circle.setAttribute("fill", "black");
+        }
+        svg.appendChild(circle);
+    };
+    function clearSVG() {
+        const svg = document.querySelector("svg");
+        const circles = svg.querySelectorAll("circle");
+        circles.forEach((circle) => {
+            svg.removeChild(circle);
+        });
+    }
     function changeR(r) {
         const elements = {
-            "Ry": r,
+            Ry: r,
             "R/2y": r / 2,
             "-R/2y": -r / 2,
             "-Ry": -r,
-            "Rx": -r,
+            Rx: -r,
             "R/2x": -r / 2,
             "-R/2x": r / 2,
-            "-Rx": r
+            "-Rx": r,
         };
         for (const id in elements) {
             const element = document.getElementById(id);
@@ -132,45 +195,58 @@ const Inputs = (props) => {
         <Container>
             <StyledFormControl>
                 <StyledFormLabel component="legend">X: </StyledFormLabel>
-                <StyledRadioGroup aria-label="x" name="x" value={x} onChange={handleXChange}>
-                    {['-2', '-1.5', '-1', '-0.5', '0', '0.5', '1', '1.5', '2'].map((value) => (
-                        <StyledFormControlLabel key={value} value={value} control={<StyledRadio/>} label={value}/>
-                    ))}
+                <StyledRadioGroup
+                    aria-label="x"
+                    name="x"
+                    value={x}
+                    onChange={handleXChange}
+                >
+                    {["-2", "-1.5", "-1", "-0.5", "0", "0.5", "1", "1.5", "2"].map(
+                        (value) => (
+                            <StyledFormControlLabel
+                                key={value}
+                                value={value}
+                                control={<StyledRadio/>}
+                                label={value}
+                            />
+                        )
+                    )}
                 </StyledRadioGroup>
             </StyledFormControl>
 
             <StyledFormControl>
                 <StyledFormLabel component="legend">Y: </StyledFormLabel>
                 <StyledTextField
-                    type="number"
-                    placeholder={'-5..3'}
+                    type="text"
+                    placeholder={"-5..3"}
                     onChange={handleYChange}
-                    value={y || ''}
-                    InputProps={{
-                        inputProps: {
-                            min: -5,
-                            max: 3,
-                        },
-                        maxLength: 2,
-                    }}
+                    value={props.y !== null ? props.y : ''}
                 />
-
             </StyledFormControl>
 
             <StyledFormControl>
                 <StyledFormLabel component="legend">R: </StyledFormLabel>
-                <StyledRadioGroup row aria-label="r" name="r" onChange={handleRChange} value={r}>
-                    {['-2', '-1.5', '-1', '-0.5', '0.5', '1', '1.5', '2'].map((value) => (
-                        <StyledFormControlLabel key={value} value={value} control={<StyledRadio/>} label={value}/>
+                <StyledRadioGroup
+                    row
+                    aria-label="r"
+                    name="r"
+                    onChange={handleRChange}
+                    value={r}
+                >
+                    {["1", "1.5", "2", "2.5", "3", "3.5", "4"].map((value) => (
+                        <StyledFormControlLabel
+                            key={value}
+                            value={value}
+                            control={<StyledRadio/>}
+                            label={value}
+                        />
                     ))}
                 </StyledRadioGroup>
             </StyledFormControl>
             <StyledButton onClick={handleSubmit}>Send</StyledButton>
             <StyledButton onClick={handleDelete}>Clear</StyledButton>
-            <StyledButton onClick={handleLogout}>Clear</StyledButton>
-
-
-            {ERROR && <div style={{color: 'red'}}>{ERROR}</div>}
+            <StyledButton onClick={handleLogout}>Logout</StyledButton>
+            {message && <Message>{message}</Message>}
         </Container>
     );
 };
@@ -180,7 +256,7 @@ const mapStateToProps = (state) => {
         x: state.x,
         y: state.y,
         r: state.r,
-        ERROR: state.ERROR,
+        points: state.points,
     };
 };
 

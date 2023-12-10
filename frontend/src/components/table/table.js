@@ -1,69 +1,60 @@
-import React, { useEffect } from 'react';
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
-import { connect, useDispatch } from "react-redux";
-import { getPoints } from "../../redux/actions/pointsActions";
+import React, {useEffect} from 'react';
+import {connect, useDispatch} from 'react-redux';
+import {getPointsForTable} from '../../redux/actions/pointsActions';
+import {
+    StyledTableContainer,
+    StyledTable,
+    StyledTableRow,
+    StyledTableCell,
+} from './tableStyles';
+import {Paper, TableBody, TableHead} from "@mui/material";
 
-const PointsTable = ({ points }) => {
+const PointsTable = ({points}) => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        const handleLoad = () => {
-            dispatch(getPoints(0));
+        const loadPoints = async () => {
+            try {
+                await dispatch(getPointsForTable());
+            } catch (error) {
+                console.error('Произошла ошибка при загрузке точек для таблицы', error);
+            }
         };
-        window.addEventListener('load', handleLoad);
-        return () => {
-            window.removeEventListener('load', handleLoad);
-        };
+        loadPoints();
     }, [dispatch]);
 
+
     return (
-        <div style={{
-            maxHeight: '800px',
-            overflowY: 'auto',
-            float: 'right',
-            width: '45%',
-            marginTop: '70px',
-            marginRight: '50px',
-            padding: '5px',
-            borderRadius: '10px',
-            backgroundColor: '#886750'
-        }}>
-            <TableContainer component={Paper}>
-                <Table style={{ color: '#cccccc' }}>
-                    <TableHead>
-                        <TableRow>
-                            <TableCell align="center"
-                                       style={{ backgroundColor: '#886750', color: '#cccccc' }}>X</TableCell>
-                            <TableCell align="center"
-                                       style={{ backgroundColor: '#886750', color: '#cccccc' }}>Y</TableCell>
-                            <TableCell align="center"
-                                       style={{ backgroundColor: '#886750', color: '#cccccc' }}>R</TableCell>
-                            <TableCell align="center"
-                                       style={{ backgroundColor: '#886750', color: '#cccccc' }}>Result</TableCell>
-                            <TableCell align="center"
-                                       style={{ backgroundColor: '#886750', color: '#cccccc' }}>Time</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {points.map((point, index) => (
-                            <TableRow key={index}>
-                                <TableCell align="center">{point.x}</TableCell>
-                                <TableCell align="center">{point.y}</TableCell>
-                                <TableCell align="center">{point.r}</TableCell>
-                                <TableCell align="center">{point.result ? "true" : "false"}</TableCell>
-                                <TableCell align="center">{point.time}</TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
-        </div>
+        <StyledTableContainer component={Paper}>
+            <StyledTable>
+                <TableHead>
+                    <StyledTableRow>
+                        <StyledTableCell align="center">X</StyledTableCell>
+                        <StyledTableCell align="center">Y</StyledTableCell>
+                        <StyledTableCell align="center">R</StyledTableCell>
+                        <StyledTableCell align="center">Result</StyledTableCell>
+                        <StyledTableCell align="center">Time</StyledTableCell>
+                    </StyledTableRow>
+                </TableHead>
+                <TableBody>
+                    {points.map((point, index) => (
+                        <StyledTableRow key={index}>
+                            <StyledTableCell align="center">{point.x}</StyledTableCell>
+                            <StyledTableCell align="center">{point.y}</StyledTableCell>
+                            <StyledTableCell align="center">{point.r}</StyledTableCell>
+                            <StyledTableCell align="center">{point.result ? "true" : "false"}</StyledTableCell>
+                            <StyledTableCell align="center">{point.time}</StyledTableCell>
+                        </StyledTableRow>
+                    ))}
+                </TableBody>
+            </StyledTable>
+        </StyledTableContainer>
     );
 };
 
 const mapStateToProps = (state) => {
     return {
-        points: state.points,
+        points: state.pointsForTable,
     };
 };
 
