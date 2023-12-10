@@ -2,6 +2,7 @@ package com.itmo.weblab4.config;
 
 import com.itmo.weblab4.handlers.AuthFailureHandler;
 import com.itmo.weblab4.handlers.AuthSuccessHandler;
+import com.itmo.weblab4.handlers.LogoutHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,10 +21,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class WebSecurityConfig {
     private final AuthSuccessHandler authSuccessHandler;
     private final AuthFailureHandler authFailureHandler;
+    private final LogoutHandler logoutHandler;
 
-    public WebSecurityConfig(AuthSuccessHandler authSuccessHandler, AuthFailureHandler authFailureHandler) {
+    public WebSecurityConfig(AuthSuccessHandler authSuccessHandler, AuthFailureHandler authFailureHandler, LogoutHandler logoutHandler) {
         this.authSuccessHandler = authSuccessHandler;
         this.authFailureHandler = authFailureHandler;
+        this.logoutHandler = logoutHandler;
     }
 
 
@@ -54,7 +57,10 @@ public class WebSecurityConfig {
                         .failureHandler(authFailureHandler)
                         .permitAll()
                 )
-                .logout(logout -> logout.permitAll().deleteCookies())
+                .logout(logout -> logout
+                        .logoutSuccessHandler(logoutHandler)
+                        .permitAll()
+                        .deleteCookies())
                 .build();
     }
 }
