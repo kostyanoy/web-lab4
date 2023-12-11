@@ -1,24 +1,6 @@
 import {connect, useDispatch} from "react-redux";
-import {
-    setX,
-    setY,
-    setR,
-    sendPoints,
-    resetPoints,
-    getPoints,
-    getPointsForTable
-} from "../../redux/actions/pointsActions";
-import {
-    StyledFormControl,
-    StyledFormLabel,
-    StyledRadioGroup,
-    StyledFormControlLabel,
-    StyledRadio,
-    Container,
-    StyledTextField,
-    StyledButton,
-    Message,
-} from "./inputsStyles";
+import {setX, setY, setR, sendPoints, resetPoints, getPoints, getPointsForTable} from "../../redux/actions/pointsActions";
+import {StyledFormControl, StyledFormLabel, StyledRadioGroup, StyledFormControlLabel, StyledRadio, Container, StyledTextField, StyledButton, Message, ButtonContainer,} from "./inputsStyles";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../services/auth";
 import {useNavigate} from "react-router-dom";
@@ -33,17 +15,19 @@ const Inputs = (props) => {
     useEffect(() => {
         updateSVG();
     }, [points]);
+
     const handleXChange = (event) => {
         if (event.target.value === "") {
             setMessage("Вы не выбрали R!!!");
         } else {
-            dispatch(setX(event.target.value));
             setMessage("");
+            dispatch(setX(event.target.value));
         }
     };
     const handleYChange = (event) => {
         const Y = event.target.value;
-        if (isNaN(Y) || Y < -5 || Y > 3 || Y === "") {
+        const regex = /^-?\d*\.?\d*$/;
+        if (!regex.test(Y) || Y < -5 || Y > 3 || Y === "") {
             setMessage("Y должен быть числом в интервале от -5 до 3");
             dispatch(setY(null));
         } else {
@@ -52,15 +36,16 @@ const Inputs = (props) => {
         }
     };
 
+
     const handleRChange = async (event) => {
         if (event.target.value === "") {
             setMessage("Вы не выбрали R!!!");
         } else {
-            dispatch(setR(event.target.value));
+            setMessage("");
             changeR(event.target.value);
             setIsRadiusSelected(true);
+            dispatch(setR(event.target.value));
             await dispatch(getPoints(parseFloat(event.target.value)));
-            setMessage("");
         }
     };
     const handleSubmit = async () => {
@@ -69,10 +54,10 @@ const Inputs = (props) => {
                 setMessage("Заполните все поля перед отправкой.");
                 return;
             }
-            dispatch(sendPoints(x, y, r));
-            dispatch(getPoints(r));
-            dispatch(getPointsForTable());
             setMessage("");
+            dispatch(sendPoints(x, y, r));
+            await dispatch(getPoints(r));
+            await dispatch(getPointsForTable());
         } catch (error) {
             console.error("Упс:", error);
         }
@@ -80,32 +65,39 @@ const Inputs = (props) => {
     const updateSVG = () => {
         clearSVG();
         points.forEach((point) => {
-            const { x, y, r } = point;
+            const {x, y, r} = point;
             calculator(x, y, r);
         });
     };
     const handleDelete = () => {
         dispatch(resetPoints());
         clearSVG();
+        dispatch(getPointsForTable());
         setMessage("Точки удалены");
         window.location.reload();
     };
+
+    useEffect(() => {
+        dispatch(getPointsForTable());
+    }, [handleDelete]);
     const handleLogout = async () => {
         await auth.logout();
         navigate("/");
     };
+
+    //работа с точками
     let flag;
     function check(x, y, r) {
-        flag = (x >= 0 && y <= 0 && x <= r / 2 && y >= -r / 2 && x+y>=-r/2) ||
+        flag = (x >= 0 && y <= 0 && x <= r / 2 && y >= -r / 2 && x + y >= -r / 2) ||
             (x <= 0 && y <= 0 && x >= -r && y >= -r) ||
-            (x >= 0 && y >= 0 && x <= r/2 && y <= r/2 && (Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r/2, 2)));
+            (x >= 0 && y >= 0 && x <= r / 2 && y <= r / 2 && (Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r / 2, 2)));
     }
 
     useEffect(() => {
         const svg = document.querySelector("svg");
         const getXY = (svg, event) => {
             const rect = svg.getBoundingClientRect();
-            return { x: event.clientX - rect.left, y: event.clientY - rect.top };
+            return {x: event.clientX - rect.left, y: event.clientY - rect.top};
         };
         let xPoint, yPoint;
 
@@ -128,15 +120,14 @@ const Inputs = (props) => {
             dispatch(setX(newX));
             dispatch(setY(newY));
             dispatch(sendPoints(newX, newY, radius));
-            dispatch(getPointsForTable());
-        };
+            await dispatch(getPointsForTable());};
 
         svg.addEventListener("click", drawPoint);
 
         return () => {
             svg.removeEventListener("click", drawPoint);
         };
-    }, [r, isRadiusSelected, check, dispatch, flag, y]);
+    }, [r, isRadiusSelected, check, dispatch, flag, y, updateSVG]);
 
     const calculator = (x, y, r) => {
         const width = 400;
@@ -165,6 +156,7 @@ const Inputs = (props) => {
         }
         svg.appendChild(circle);
     };
+
     function clearSVG() {
         const svg = document.querySelector("svg");
         const circles = svg.querySelectorAll("circle");
@@ -172,6 +164,7 @@ const Inputs = (props) => {
             svg.removeChild(circle);
         });
     }
+
     function changeR(r) {
         const elements = {
             Ry: r,
@@ -217,7 +210,7 @@ const Inputs = (props) => {
             <StyledFormControl>
                 <StyledFormLabel component="legend">Y: </StyledFormLabel>
                 <StyledTextField
-                    type="text"
+                    type="number"
                     placeholder={"-5..3"}
                     onChange={handleYChange}
                     value={props.y !== null ? props.y : ''}
@@ -243,9 +236,11 @@ const Inputs = (props) => {
                     ))}
                 </StyledRadioGroup>
             </StyledFormControl>
+            <ButtonContainer>
             <StyledButton onClick={handleSubmit}>Send</StyledButton>
             <StyledButton onClick={handleDelete}>Clear</StyledButton>
             <StyledButton onClick={handleLogout}>Logout</StyledButton>
+            </ButtonContainer>
             {message && <Message>{message}</Message>}
         </Container>
     );

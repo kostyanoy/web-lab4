@@ -3,7 +3,6 @@ import './mainPage.css';
 import Inputs from "../inputs/inputs";
 import Table from "../table/table";
 const MainPage = () => {
-
     return (
         <div>
             <div className="window">
@@ -45,5 +44,4 @@ const MainPage = () => {
         </div>
     );
 };
-
 export default MainPage;

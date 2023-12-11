@@ -93,7 +93,6 @@ export const StyledButton = styled(Button)`
     color: #462904;
   }
 `;
-
 export const Message = styled('div')`
   color: #462904;
   border: 1px solid #462904;

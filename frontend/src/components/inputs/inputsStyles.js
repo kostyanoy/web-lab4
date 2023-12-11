@@ -9,15 +9,15 @@ export const Container = styled('div')`
   text-align: center;
   margin-left: auto;
   margin-right: auto;
-
+  /* Десктопный режим */
   @media (min-width: 1255px) {
     margin-top: 7px;
   }
-
+  /* Планшетный режим */
   @media (min-width: 814px) and (max-width: 1254px) {
     margin-top: 10px;
   }
-
+  /* Мобильный режим */
   @media screen and (max-width: 814px) {
     margin-top: 10px;
   }
@@ -35,14 +35,15 @@ export const StyledFormControl = styled(FormControl)`
   &:hover {
     color: #462904;
   }
+  /* Десктопный режим */
   @media (min-width: 1255px) {
     margin-bottom: 5px;
   }
-
+  /* Планшетный режим */
   @media (min-width: 814px) and (max-width: 1254px) {
     margin-bottom: 2px;
   }
-
+  /* Мобильный режим */
   @media screen and (max-width: 814px) {
     margin-bottom: 2px;
   }
@@ -80,7 +81,7 @@ export const StyledFormControlLabel = styled(FormControlLabel)`
 export const StyledRadio = styled(Radio)`
   color: #462904;
   & .MuiSvgIcon-root {
-    font-size: 10px;
+    font-size: 14px;
   }
   &.Mui-checked {
     color: #d8c8bc;
@@ -115,7 +116,15 @@ export const StyledTextField = styled(TextField)`
       border-color: #462904;
     }
 `;
+export const ButtonContainer = styled(`div`)`
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  gap: 5px;
+`;
 export const StyledButton = styled(Button)`
+  display: flex;
+  justify-content: space-between;
   font-family: Lato, Montserrat, sans-serif;
   color: #462904;
   text-align: center;
@@ -123,21 +132,22 @@ export const StyledButton = styled(Button)`
   margin-right: auto;
   background-color: #d8c8bc;
   font-weight: bold;
-  width: 100%;
+  width: auto; 
   max-width: 80%;
   font-size: 12px;
-  margin-bottom: 5px;
-
+  margin-bottom: 5px;;
+  
+  /* Десктопный режим */
   @media (min-width: 1255px) {
     font-size: 14px;
     margin-bottom: 10px;
   }
-
+  /* Планшетный режим */
   @media (min-width: 814px) and (max-width: 1254px) {
     font-size: 12px;
     margin-bottom: 7px;
   }
-
+  /* Мобильный режим */
   @media screen and (max-width: 814px) {
     font-size: 12px;
     margin-bottom: 5px;
@@ -164,16 +174,17 @@ export const Message = styled('div')`
   margin-top: 10px;
   padding: 10px;
   
+  /* Десктопный режим */
   @media (min-width: 1255px) {
     margin-top: 10px;
     font-size: 12px;
   }
-
+  /* Планшетный режим */
   @media (min-width: 814px) and (max-width: 1254px) {
     margin-top: 5px;
     font-size: 12px;
   }
-
+  /* Мобильный режим */
   @media screen and (max-width: 814px) {
     margin-top: 5px;
     font-size: 12px;

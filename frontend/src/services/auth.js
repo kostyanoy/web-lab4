@@ -51,6 +51,7 @@ export function useAuth() {
             await axios.post('http://localhost:8080/logout', {
                 withCredentials: true,
             });
+            console.log("Logout done")
             Cookies.remove('user');
             setAuthenticated(false);
         } catch (error) {

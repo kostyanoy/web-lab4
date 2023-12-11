@@ -9,11 +9,11 @@ const initialState = {
 const pointReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SET_X':
-            return {...state, x: action.payload.x};
+            return {...state, x: action.payload};
         case 'SET_Y':
-            return {...state, y: action.payload.y};
+            return {...state, y: action.payload};
         case 'SET_R':
-            return {...state, r: action.payload.r};
+            return {...state, r: action.payload};
         case 'ADD_POINTS':
             return {
                 ...state,
