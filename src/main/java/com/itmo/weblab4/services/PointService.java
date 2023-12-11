@@ -57,6 +57,7 @@ public class PointService implements PointServiceInterface {
     }
 
     @Override
+    @ExecutionTimeMeasured
     public ResponseEntity<ObjectNode> addPoint(double x, double y, double r) {
         try {
             PointEntity point = new PointEntity(null, getCurrentUserId(), x, y, r, new Date(), checkUtils.checkPoint(x, y, r), false);
@@ -68,6 +69,7 @@ public class PointService implements PointServiceInterface {
     }
 
     @Override
+    @ExecutionTimeMeasured
     public ResponseEntity<ObjectNode> resetPoints() {
         try {
             List<PointEntity> points = pointRepository.findAllByUserIdAndIsDeleted(getCurrentUserId(), false);
