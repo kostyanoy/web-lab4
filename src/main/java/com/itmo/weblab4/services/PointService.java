@@ -2,6 +2,7 @@ package com.itmo.weblab4.services;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.itmo.weblab4.annotations.ExecutionTimeMeasured;
 import com.itmo.weblab4.dto.PointDTO;
 import com.itmo.weblab4.entities.PointEntity;
 import com.itmo.weblab4.repos.PointRepository;
@@ -16,19 +17,21 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class PointService {
+public class PointService implements PointServiceInterface {
+    private final ResponseServiceInterface responseService;
     private final UserRepository userRepository;
-    private final ResponseService responseService;
     private final PointRepository pointRepository;
     private final CheckUtils checkUtils;
 
-    public PointService(ResponseService responseService, PointRepository pointRepository, UserRepository userRepository, CheckUtils checkUtils) {
+    public PointService(ResponseServiceInterface responseService, PointRepository pointRepository, UserRepository userRepository, CheckUtils checkUtils) {
         this.responseService = responseService;
         this.pointRepository = pointRepository;
         this.userRepository = userRepository;
         this.checkUtils = checkUtils;
     }
 
+    @Override
+    @ExecutionTimeMeasured
     public ResponseEntity<ObjectNode> getPoints(double r) {
         try {
             Integer userId = getCurrentUserId();
@@ -53,6 +56,8 @@ public class PointService {
         }
     }
 
+    @Override
+    @ExecutionTimeMeasured
     public ResponseEntity<ObjectNode> addPoint(double x, double y, double r) {
         try {
             PointEntity point = new PointEntity(null, getCurrentUserId(), x, y, r, new Date(), checkUtils.checkPoint(x, y, r), false);
@@ -63,6 +68,8 @@ public class PointService {
         }
     }
 
+    @Override
+    @ExecutionTimeMeasured
     public ResponseEntity<ObjectNode> resetPoints() {
         try {
             List<PointEntity> points = pointRepository.findAllByUserIdAndIsDeleted(getCurrentUserId(), false);

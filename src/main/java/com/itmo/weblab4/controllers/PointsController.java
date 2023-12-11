@@ -2,7 +2,7 @@ package com.itmo.weblab4.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itmo.weblab4.dto.PointDTO;
-import com.itmo.weblab4.services.PointService;
+import com.itmo.weblab4.services.PointServiceInterface;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/points")
 public class PointsController {
-    private final PointService pointService;
+    private final PointServiceInterface pointService;
 
-    public PointsController(PointService pointService) {
+    public PointsController(PointServiceInterface pointService) {
         this.pointService = pointService;
     }
 

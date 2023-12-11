@@ -2,18 +2,18 @@ package com.itmo.weblab4.controllers;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itmo.weblab4.dto.RegistrationDTO;
-import com.itmo.weblab4.services.AuthenticalService;
-import com.itmo.weblab4.services.ResponseService;
+import com.itmo.weblab4.services.AuthenticalServiceInterface;
+import com.itmo.weblab4.services.ResponseServiceInterface;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin
 @RestController
 public class AuthenticationController {
-    private final AuthenticalService authenticalService;
-    private final ResponseService responseService;
+    private final AuthenticalServiceInterface authenticalService;
+    private final ResponseServiceInterface responseService;
 
-    public AuthenticationController(AuthenticalService authenticalService, ResponseService responseService) {
+    public AuthenticationController(AuthenticalServiceInterface authenticalService, ResponseServiceInterface responseService) {
         this.authenticalService = authenticalService;
         this.responseService = responseService;
     }

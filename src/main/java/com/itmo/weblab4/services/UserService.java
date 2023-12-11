@@ -1,5 +1,6 @@
 package com.itmo.weblab4.services;
 
+import com.itmo.weblab4.annotations.ExecutionTimeMeasured;
 import com.itmo.weblab4.repos.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Override
+    @ExecutionTimeMeasured
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User is not found"));
     }
