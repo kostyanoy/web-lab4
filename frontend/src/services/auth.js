@@ -39,6 +39,7 @@ export function useAuth() {
                     withCredentials: true,
                 }
             );
+            Cookies.set('user');
             console.log('Login successful', response.data);
             handleAuthentication(true);
         } catch (error) {

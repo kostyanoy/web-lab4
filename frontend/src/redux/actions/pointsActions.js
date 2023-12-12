@@ -2,6 +2,7 @@ import axios from 'axios';
 export const setX = (x) => ({ type: 'SET_X', payload: x });
 export const setY = (y) => ({ type: 'SET_Y', payload: y });
 export const setR = (r) => ({ type: 'SET_R', payload: r });
+export  const logout = () => ({type:'LOGOUT'})
 export const sendPoints = (x, y, r) => {
     return async function (dispatch) {
         try {

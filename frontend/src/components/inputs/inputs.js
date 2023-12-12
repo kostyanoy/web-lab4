@@ -1,5 +1,5 @@
 import {connect, useDispatch} from "react-redux";
-import {setX, setY, setR, sendPoints, resetPoints, getPoints, getPointsForTable} from "../../redux/actions/pointsActions";
+import {setX, setY, setR, sendPoints, resetPoints, getPoints, getPointsForTable, logout} from "../../redux/actions/pointsActions";
 import {StyledFormControl, StyledFormLabel, StyledRadioGroup, StyledFormControlLabel, StyledRadio, Container, StyledTextField, StyledButton, Message, ButtonContainer,} from "./inputsStyles";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../services/auth";
@@ -12,6 +12,7 @@ const Inputs = (props) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const auth = useAuth();
+
     useEffect(() => {
         updateSVG();
     }, [points]);
@@ -80,19 +81,25 @@ const Inputs = (props) => {
     useEffect(() => {
         dispatch(getPointsForTable());
     }, [handleDelete]);
+
     const handleLogout = async () => {
+        clearSVG();
+        dispatch(logout());
         await auth.logout();
         navigate("/");
     };
 
     //работа с точками
     let flag;
-    function check(x, y, r) {
-        flag = (x >= 0 && y <= 0 && x <= r / 2 && y >= -r / 2 && x + y >= -r / 2) ||
-            (x <= 0 && y <= 0 && x >= -r && y >= -r) ||
-            (x >= 0 && y >= 0 && x <= r / 2 && y <= r / 2 && (Math.pow(x, 2) + Math.pow(y, 2) <= Math.pow(r / 2, 2)));
-    }
 
+    function check(x, y, r) {
+        const isInsideCircle = (x, y, radius) => x * x + y * y <= radius * radius;
+        const isInsideRectangle = (x, y, height, width) => Math.abs(x) <= width && Math.abs(y) <= height;
+        const isInsideRhombus = (x, y, height, width) => Math.abs(x) / width + Math.abs(y) / height <= 1;
+        flag =  (x >= 0 && y >= 0 && isInsideCircle(x, y, r / 2)) ||
+            (x >= 0 && y <= 0 && isInsideRhombus(x, y, r / 2, r / 2)) ||
+            (x <= 0 && y <= 0 && isInsideRectangle(x, y, r, r));
+    }
     useEffect(() => {
         const svg = document.querySelector("svg");
         const getXY = (svg, event) => {
@@ -115,11 +122,10 @@ const Inputs = (props) => {
             const temp = 120 / radius;
             const newX = (tempX / temp).toFixed(1);
             const newY = (tempY / temp).toFixed(1);
-            check(xPoint, yPoint, radius);
-            setRound(xPoint, yPoint, flag);
             dispatch(setX(newX));
             dispatch(setY(newY));
             dispatch(sendPoints(newX, newY, radius));
+            calculator(newX,newY,radius);
             await dispatch(getPointsForTable());};
 
         svg.addEventListener("click", drawPoint);

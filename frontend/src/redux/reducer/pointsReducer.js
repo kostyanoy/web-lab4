@@ -20,11 +20,13 @@ const pointReducer = (state = initialState, action) => {
                 points: state.points.concat({x: action.payload.x, y: action.payload.y, r: action.payload.r})
             };
         case 'GET_POINTS_SUCCESS':
-            return { ...state, points: action.payload.points };
+            return {...state, points: action.payload.points};
         case 'GET_POINTS_FOR_TABLE_SUCCESS':
-            return { ...state, pointsForTable: action.payload.points };
+            return {...state, pointsForTable: action.payload.points};
         case 'RESET_ALL_POINTS':
             return {...state};
+        case 'LOGOUT':
+            return {...state, points: []};
         default:
             return state;
     }
