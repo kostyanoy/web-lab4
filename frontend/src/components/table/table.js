@@ -11,12 +11,10 @@ const PointsTable = ({points}) => {
                 try {
                     await dispatch(getPointsForTable());
                 } catch (error) {
-                    console.error('Произошла ошибка при загрузке точек для таблицы', error);
+                    console.error('Error loading points for the table', error);
                 }
             })();
         }, [dispatch]);
-
-
 
     return (
         <StyledTableContainer component={Paper}>

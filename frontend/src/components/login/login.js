@@ -9,14 +9,12 @@ const Login = () => {
     const [message, setMessage] = useState("");
     const navigate = useNavigate();
     const auth = useAuth();
-
     const handleLoginChange = (e) => {
         const value = e.target.value;
         if (/^[a-zA-Z0-9.@]+$/.test(value) || value === "") {
             setUsername(value);
         }
     };
-
     const handlePasswordChange = (e) => {
         const value = e.target.value;
         if (/^[a-zA-Z0-9.@]+$/.test(value) || value === "") {
@@ -43,7 +41,7 @@ const Login = () => {
         } else {
             try {
                 await auth.register(username, password);
-                setMessage("Вы успешно зарегестрировались");
+                setMessage("Вы успешно зарегистрировались");
             } catch (error) {
                 setMessage("Пользователь уже зарегистрирован");
             }

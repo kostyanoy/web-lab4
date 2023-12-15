@@ -16,13 +16,10 @@ export const sendPoints = (x, y, r) => {
                     type: 'ADD_POINTS',
                     payload: { x, y, r }
                 });
-                console.log(`Точка успешно сохранена`);
-            } else {
-                console.error(`Не удалось сохранить точку. Ошибка: ${response.data.error}`);
+                console.log(`Point successfully saved`);
             }
         } catch (error) {
-
-            console.error('Произошла ошибка при отправке точки:', error);
+            console.error('Error sending point:', error);
         }
     };
 };
@@ -40,10 +37,10 @@ export const getPoints = (r) => {
                     type: 'GET_POINTS_SUCCESS',
                     payload: response.data
                 });
-                console.log('Точки успешно получены:', response.data);
+                console.log('Points successfully retrieved:', response.data);
             }
         } catch (error) {
-            console.log("Ошибка при получении точек")
+            console.log("Error getting points")
         }
     };
 };
@@ -60,10 +57,10 @@ export const getPointsForTable = () => {
                     type: 'GET_POINTS_FOR_TABLE_SUCCESS',
                     payload: response.data
                 });
-                console.log('Точки успешно получены:', response.data);
+                console.log('Points successfully retrieved:', response.data);
             }
         } catch (error) {
-            console.log("Произошла ошибка при получении точек для таблциы")
+            console.log("Error getting points for the table")
         }
     };
 };
@@ -79,11 +76,9 @@ return async function (dispatch) {
             dispatch({
                 type: 'RESET_ALL_POINTS'
             })
-            console.log('Точки успешно сброшены');
-        } else {
-            console.error(`Не удалось сбросить точки. Ошибка: ${response.data.error}`);
+            console.log('Points successfully reset');
         }
     } catch (error) {
-        console.error('Произошла ошибка при сбросе точек:', error);
+        console.error('Error resetting points:', error);
     }}
 };

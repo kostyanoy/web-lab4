@@ -1,13 +1,8 @@
 import React, { useState } from "react";
-import Cookies from 'js-cookie';
 import axios from 'axios';
 
 export function useAuth() {
     const [isAuthenticated, setAuthenticated] = useState(false);
-    const handleAuthentication = (status) => {
-        setAuthenticated(status);
-    };
-
     const register = async (login, password) => {
         try {
             const response = await axios.post(
@@ -39,9 +34,8 @@ export function useAuth() {
                     withCredentials: true,
                 }
             );
-            Cookies.set('user');
             console.log('Login successful', response.data);
-            handleAuthentication(true);
+            setAuthenticated(true);
         } catch (error) {
             console.error('Login failed.', error);
             throw error;
@@ -53,7 +47,6 @@ export function useAuth() {
                 withCredentials: true,
             });
             console.log("Logout done")
-            Cookies.remove('user');
             setAuthenticated(false);
         } catch (error) {
             console.error('Failed to logout:', error);
