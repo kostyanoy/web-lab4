@@ -1,12 +1,9 @@
 package com.itmo.weblab4.controllers;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itmo.weblab4.dto.CommonResponseDTO;
 import com.itmo.weblab4.dto.RegistrationDTO;
 import com.itmo.weblab4.services.AuthenticalServiceInterface;
-import com.itmo.weblab4.services.ResponseServiceInterface;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +11,9 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class AuthenticationController {
     private final AuthenticalServiceInterface authenticalService;
-    private final ResponseServiceInterface responseService;
 
-    public AuthenticationController(AuthenticalServiceInterface authenticalService, ResponseServiceInterface responseService) {
+    public AuthenticationController(AuthenticalServiceInterface authenticalService) {
         this.authenticalService = authenticalService;
-        this.responseService = responseService;
     }
 
     @PostMapping(value = "/register")
@@ -32,7 +27,7 @@ public class AuthenticationController {
 
     @GetMapping("/login")
     public ResponseEntity<CommonResponseDTO> login() {
-        return new ResponseEntity<>(new CommonResponseDTO(false, "GET on /login is useless"), HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(new CommonResponseDTO(false, "Please authorize"), HttpStatus.UNAUTHORIZED);
     }
 
     @GetMapping("/valid")

@@ -1,31 +1,28 @@
 package com.itmo.weblab4.services;
 
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.itmo.weblab4.annotations.ExecutionTimeMeasured;
 import com.itmo.weblab4.dto.CommonResponseDTO;
 import com.itmo.weblab4.dto.PointDTO;
+import com.itmo.weblab4.dto.PointsResponseDTO;
 import com.itmo.weblab4.entities.PointEntity;
 import com.itmo.weblab4.repos.PointRepository;
 import com.itmo.weblab4.repos.UserRepository;
 import com.itmo.weblab4.utils.CheckUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Service
 public class PointService implements PointServiceInterface {
-    private final ResponseServiceInterface responseService;
     private final UserRepository userRepository;
     private final PointRepository pointRepository;
     private final CheckUtils checkUtils;
 
-    public PointService(ResponseServiceInterface responseService, PointRepository pointRepository, UserRepository userRepository, CheckUtils checkUtils) {
-        this.responseService = responseService;
+    public PointService(PointRepository pointRepository, UserRepository userRepository, CheckUtils checkUtils) {
         this.pointRepository = pointRepository;
         this.userRepository = userRepository;
         this.checkUtils = checkUtils;
@@ -33,27 +30,22 @@ public class PointService implements PointServiceInterface {
 
     @Override
     @ExecutionTimeMeasured
-    public ResponseEntity<ObjectNode> getPoints(double r) {
+    public PointsResponseDTO getPoints(double r) {
         try {
             Integer userId = getCurrentUserId();
-
 
             List<PointEntity> pointEntities = (r <= 0) ?
                     pointRepository.findAllByUserIdAndIsDeleted(userId, false) :
                     pointRepository.findAllByUserIdAndRAndIsDeleted(userId, r, false);
-
 
             List<PointDTO> points = pointEntities
                     .stream()
                     .map(p -> new PointDTO(p.getX(), p.getY(), p.getR(), p.isResult(), p.getCheckDate()))
                     .toList();
 
-            ResponseEntity<ObjectNode> response = responseService.success("Found points");
-            ArrayNode arrayNode = response.getBody().putArray("points");
-            points.forEach(p -> arrayNode.addPOJO(p));
-            return response;
+            return new PointsResponseDTO(true, "Found points", points);
         } catch (Exception e) {
-            return responseService.fail("Can't get points");
+            return new PointsResponseDTO(false,"Can't get points", new ArrayList<>());
         }
     }
 
@@ -63,9 +55,9 @@ public class PointService implements PointServiceInterface {
         try {
             PointEntity point = new PointEntity(null, getCurrentUserId(), x, y, r, new Date(), checkUtils.checkPoint(x, y, r), false);
             pointRepository.save(point);
-            return responseService.success("Point saved");
+            return new CommonResponseDTO(true, "Point saved");
         } catch (Exception e) {
-            return responseService.fail("Can't save point");
+            return new CommonResponseDTO(false, "Can't save point");
         }
     }
 
@@ -76,9 +68,9 @@ public class PointService implements PointServiceInterface {
             List<PointEntity> points = pointRepository.findAllByUserIdAndIsDeleted(getCurrentUserId(), false);
             points.forEach(p -> p.setDeleted(true));
             pointRepository.saveAll(points);
-            return responseService.success("Marked points to delete");
+            return new CommonResponseDTO(true, "Marked points to delete");
         } catch (Exception e) {
-            return responseService.fail("Can't mark points to delete");
+            return new CommonResponseDTO(false, "Can't mark points to delete");
         }
     }
 

@@ -1,8 +1,10 @@
 package com.itmo.weblab4.controllers;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.itmo.weblab4.dto.CommonResponseDTO;
 import com.itmo.weblab4.dto.PointDTO;
+import com.itmo.weblab4.dto.PointsResponseDTO;
 import com.itmo.weblab4.services.PointServiceInterface;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,18 +19,33 @@ public class PointsController {
     }
 
     @GetMapping
-    public ResponseEntity<ObjectNode> getPoints(@RequestParam double r) {
-        return pointService.getPoints(r);
+    public ResponseEntity<PointsResponseDTO> getPoints(@RequestParam double r) {
+        PointsResponseDTO response = pointService.getPoints(r);
+
+        if (response.isSuccess()){
+            return ResponseEntity.ok(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping()
-    public ResponseEntity<ObjectNode> createPoint(@RequestBody PointDTO body) {
-        return pointService.addPoint(body.getX(), body.getY(), body.getR());
+    public ResponseEntity<CommonResponseDTO> createPoint(@RequestBody PointDTO body) {
+        CommonResponseDTO response = pointService.addPoint(body.getX(), body.getY(), body.getR());
+
+        if (response.isSuccess()){
+            return ResponseEntity.ok(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @PostMapping(value = "/reset")
-    public ResponseEntity<ObjectNode> resetPoints() {
-        return pointService.resetPoints();
+    public ResponseEntity<CommonResponseDTO> resetPoints() {
+        CommonResponseDTO response = pointService.resetPoints();
+
+        if (response.isSuccess()){
+            return ResponseEntity.ok(response);
+        }
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

@@ -14,16 +14,14 @@ import java.util.Set;
 
 @Service
 public class AuthenticalService implements AuthenticalServiceInterface {
-    private final ResponseServiceInterface responseService;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public AuthenticalService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, ResponseServiceInterface responseService) {
+    public AuthenticalService(UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
-        this.responseService = responseService;
     }
 
     @Override
@@ -32,9 +30,6 @@ public class AuthenticalService implements AuthenticalServiceInterface {
         if (username == null || password == null) {
             return new CommonResponseDTO(false, "Username or password is null!");
         }
-//        if (userRepository.findByUsername(username).isPresent()) {
-//            return responseService.fail("Username exists");
-//        }
 
         String encodedPassword = passwordEncoder.encode(password);
         RoleEntity role = roleRepository.findByAuthority("USER").get();
