@@ -58,9 +58,10 @@ public class WebSecurityConfig {
                         .permitAll()
                 )
                 .logout(logout -> logout
+                        .deleteCookies()
+                        .invalidateHttpSession(true)
                         .logoutSuccessHandler(logoutHandler)
-                        .permitAll()
-                        .deleteCookies())
+                        .permitAll())
                 .build();
     }
 }

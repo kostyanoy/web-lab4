@@ -1,8 +1,7 @@
 package com.itmo.weblab4.services;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.springframework.http.ResponseEntity;
+import com.itmo.weblab4.dto.CommonResponseDTO;
 
 public interface AuthenticalServiceInterface {
-    ResponseEntity<ObjectNode> registerUser(String username, String password);
+    CommonResponseDTO registerUser(String username, String password);
 }
