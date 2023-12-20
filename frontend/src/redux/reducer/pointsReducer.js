@@ -4,8 +4,8 @@ const initialState = {
     r: '0',
     points: [],
     pointsForTable: [],
+    authStatus: false,
 };
-
 const pointReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SET_X':
@@ -24,9 +24,11 @@ const pointReducer = (state = initialState, action) => {
         case 'GET_POINTS_FOR_TABLE_SUCCESS':
             return {...state, pointsForTable: action.payload.points};
         case 'RESET_ALL_POINTS':
-            return {...state};
+            return {...state, points: [], pointsForTable: []};
         case 'LOGOUT':
-            return {...state, points: []};
+            return {...state, points: [], authStatus: false, pointsForTable: []};
+        case 'LOGIN':
+            return{...state, authStatus: true};
         default:
             return state;
     }

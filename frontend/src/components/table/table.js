@@ -1,20 +1,23 @@
-import React, {useEffect} from 'react';
-import {connect, useDispatch} from 'react-redux';
-import {getPointsForTable} from '../../redux/actions/pointsActions';
-import {StyledTableContainer, StyledTable, StyledTableRow, StyledTableCell,} from './tableStyles';
-import {Paper, TableBody, TableHead} from "@mui/material";
-const PointsTable = ({points}) => {
-    const dispatch = useDispatch();
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getPointsForTable } from '../../redux/actions/pointsActions';
+import { StyledTableContainer, StyledTable, StyledTableRow, StyledTableCell, } from './tableStyles';
+import { Paper, TableBody, TableHead } from "@mui/material";
 
-        useEffect(() => {
-            (async () => {
-                try {
-                    await dispatch(getPointsForTable());
-                } catch (error) {
-                    console.error('Error loading points for the table', error);
-                }
-            })();
-        }, [dispatch]);
+const PointsTable = () => {
+    const dispatch = useDispatch();
+    const points = useSelector(state => state.pointsForTable);
+    const pointsWithR = useSelector(state => state.points);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                await dispatch(getPointsForTable());
+            } catch (error) {
+                console.error('Error loading points for the table', error);
+            }
+        })();
+    }, [dispatch, pointsWithR]);
 
     return (
         <StyledTableContainer component={Paper}>
@@ -43,9 +46,5 @@ const PointsTable = ({points}) => {
         </StyledTableContainer>
     );
 };
-const mapStateToProps = (state) => {
-    return {
-        points: state.pointsForTable,
-    };
-};
-export default connect(mapStateToProps)(PointsTable);
+
+export default PointsTable;

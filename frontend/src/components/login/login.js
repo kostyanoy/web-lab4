@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Container, ButtonContainer, StyledButton, TextFieldStyle, Message } from "./loginStyles";
 import { useAuth } from "../../services/auth";
 
@@ -7,7 +6,6 @@ const Login = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [message, setMessage] = useState("");
-    const navigate = useNavigate();
     const auth = useAuth();
     const handleLoginChange = (e) => {
         const value = e.target.value;
@@ -29,7 +27,6 @@ const Login = () => {
         } else {
             try {
                 await auth.login(username, password);
-                navigate("/main");
             } catch (error) {
                 setMessage("Ошибка при входе");
             }

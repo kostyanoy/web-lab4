@@ -1,8 +1,9 @@
-import React, { useState } from "react";
 import axios from 'axios';
+import {useDispatch} from "react-redux";
+import {loginAuth,} from "../redux/actions/pointsActions";
 
 export function useAuth() {
-    const [isAuthenticated, setAuthenticated] = useState(false);
+    const dispatch = useDispatch();
     const register = async (login, password) => {
         try {
             const response = await axios.post(
@@ -18,6 +19,7 @@ export function useAuth() {
             throw error;
         }
     };
+
 
     const login = async (login, password) => {
         try {
@@ -35,7 +37,7 @@ export function useAuth() {
                 }
             );
             console.log('Login successful', response.data);
-            setAuthenticated(true);
+            dispatch(loginAuth());
         } catch (error) {
             console.error('Login failed.', error);
             throw error;
@@ -47,15 +49,12 @@ export function useAuth() {
                 withCredentials: true,
             });
             console.log("Logout done")
-            setAuthenticated(false);
         } catch (error) {
             console.error('Failed to logout:', error);
         }
     };
 
     return {
-        setAuthenticated,
-        isAuthenticated,
         register,
         login, logout,
     };

@@ -1,12 +1,31 @@
 import {connect, useDispatch} from "react-redux";
-import {setX, setY, setR, sendPoints, resetPoints, getPoints, getPointsForTable, logout} from "../../redux/actions/pointsActions";
-import {StyledFormControl, StyledFormLabel, StyledRadioGroup, StyledFormControlLabel, StyledRadio, Container, StyledTextField, StyledButton, Message, ButtonContainer,} from "./inputsStyles";
+import {
+    setX,
+    setY,
+    setR,
+    sendPoints,
+    resetPoints,
+    getPoints,
+    logoutAuth, saveStateToLocalStorage
+} from "../../redux/actions/pointsActions";
+import {
+    StyledFormControl,
+    StyledFormLabel,
+    StyledRadioGroup,
+    StyledFormControlLabel,
+    StyledRadio,
+    Container,
+    StyledTextField,
+    StyledButton,
+    Message,
+    ButtonContainer,
+} from "./inputsStyles";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../services/auth";
 import {useNavigate} from "react-router-dom";
 
-const Inputs = (props) => {
-    const {x, y, r, points} = props;
+const Inputs = ({ x, y, r, points }) => {
+
     const [message, setMessage] = useState("");
     const [isRadiusSelected, setIsRadiusSelected] = useState(false);
     const dispatch = useDispatch();
@@ -58,7 +77,6 @@ const Inputs = (props) => {
             setMessage("");
             dispatch(sendPoints(x, y, r));
             await dispatch(getPoints(r));
-            await dispatch(getPointsForTable());
         } catch (error) {
             console.error("Упс:", error);
         }
@@ -70,44 +88,37 @@ const Inputs = (props) => {
             calculator(x, y, r);
         });
     };
-    const handleDelete = () => {
-        dispatch(resetPoints());
+    const handleDelete = async () => {
         clearSVG();
-        dispatch(getPointsForTable());
+        await dispatch(resetPoints());
         setMessage("Точки удалены");
-        window.location.reload();
+        await dispatch(saveStateToLocalStorage());
     };
-
-    useEffect(() => {
-        dispatch(getPointsForTable());
-    }, [handleDelete]);
 
     const handleLogout = async () => {
         clearSVG();
-        dispatch(logout());
+        dispatch(saveStateToLocalStorage());
+        dispatch(logoutAuth());
         await auth.logout();
         navigate("/");
     };
 
-    //работа с точками
     let flag;
-
     function check(x, y, r) {
         const isInsideCircle = (x, y, radius) => x * x + y * y <= radius * radius;
         const isInsideRectangle = (x, y, height, width) => Math.abs(x) <= width && Math.abs(y) <= height;
         const isInsideRhombus = (x, y, height, width) => Math.abs(x) / width + Math.abs(y) / height <= 1;
-        flag =  (x >= 0 && y >= 0 && isInsideCircle(x, y, r / 2)) ||
+        flag = (x >= 0 && y >= 0 && isInsideCircle(x, y, r / 2)) ||
             (x >= 0 && y <= 0 && isInsideRhombus(x, y, r / 2, r / 2)) ||
             (x <= 0 && y <= 0 && isInsideRectangle(x, y, r, r));
     }
+
     useEffect(() => {
         const svg = document.querySelector("svg");
         const getXY = (svg, event) => {
             const rect = svg.getBoundingClientRect();
             return {x: event.clientX - rect.left, y: event.clientY - rect.top};
         };
-        let xPoint, yPoint;
-
         const drawPoint = async (event) => {
             if (!isRadiusSelected) {
                 setMessage("А кто радиус выбирать будет?!");
@@ -115,8 +126,6 @@ const Inputs = (props) => {
             }
             let radius = r;
             const point = getXY(svg, event);
-            xPoint = point.x;
-            yPoint = point.y;
             const tempX = point.x - 200;
             const tempY = 200 - point.y;
             const temp = 120 / radius;
@@ -125,8 +134,8 @@ const Inputs = (props) => {
             dispatch(setX(newX));
             dispatch(setY(newY));
             dispatch(sendPoints(newX, newY, radius));
-            calculator(newX,newY,radius);
-            await dispatch(getPointsForTable());};
+            calculator(newX, newY, radius);
+        };
 
         svg.addEventListener("click", drawPoint);
 
@@ -219,8 +228,7 @@ const Inputs = (props) => {
                     type="number"
                     placeholder={"-5..3"}
                     onChange={handleYChange}
-                    value={props.y !== null ? props.y : ''}
-                />
+                    value={y !== null ? y : ""}/>
             </StyledFormControl>
 
             <StyledFormControl>
@@ -243,22 +251,18 @@ const Inputs = (props) => {
                 </StyledRadioGroup>
             </StyledFormControl>
             <ButtonContainer>
-            <StyledButton onClick={handleSubmit}>Send</StyledButton>
-            <StyledButton onClick={handleDelete}>Clear</StyledButton>
-            <StyledButton onClick={handleLogout}>Logout</StyledButton>
+                <StyledButton onClick={handleSubmit}>Send</StyledButton>
+                <StyledButton onClick={handleDelete}>Clear</StyledButton>
+                <StyledButton onClick={handleLogout}>Logout</StyledButton>
             </ButtonContainer>
             {message && <Message>{message}</Message>}
         </Container>
     );
 };
-
-const mapStateToProps = (state) => {
-    return {
-        x: state.x,
-        y: state.y,
-        r: state.r,
-        points: state.points,
-    };
-};
-
+const mapStateToProps = (state) => ({
+    x: state.x,
+    y: state.y,
+    r: state.r,
+    points: state.points,
+});
 export default connect(mapStateToProps)(Inputs);
