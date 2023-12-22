@@ -1,31 +1,15 @@
-import {connect, useDispatch} from "react-redux";
-import {
-    setX,
-    setY,
-    setR,
-    sendPoints,
-    resetPoints,
-    getPoints,
-    logoutAuth, saveStateToLocalStorage
-} from "../../redux/actions/pointsActions";
-import {
-    StyledFormControl,
-    StyledFormLabel,
-    StyledRadioGroup,
-    StyledFormControlLabel,
-    StyledRadio,
-    Container,
-    StyledTextField,
-    StyledButton,
-    Message,
-    ButtonContainer,
-} from "./inputsStyles";
+import {useDispatch, useSelector} from "react-redux";
+import {setX, setY, setR, sendPoints, resetPoints, getPoints, logoutAuth, saveStateToLocalStorage} from "../../redux/actions/pointsActions";
+import {StyledFormControl, StyledFormLabel, StyledRadioGroup, StyledFormControlLabel, StyledRadio, Container, StyledTextField, StyledButton, Message, ButtonContainer,} from "./inputsStyles";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../services/auth";
 import {useNavigate} from "react-router-dom";
 
-const Inputs = ({ x, y, r, points }) => {
-
+const Inputs = () => {
+    const x = useSelector((state) => state.x);
+    const y = useSelector((state) => state.y);
+    const r = useSelector((state) => state.r);
+    const points = useSelector((state) => state.points);
     const [message, setMessage] = useState("");
     const [isRadiusSelected, setIsRadiusSelected] = useState(false);
     const dispatch = useDispatch();
@@ -55,8 +39,6 @@ const Inputs = ({ x, y, r, points }) => {
             dispatch(setY(Y));
         }
     };
-
-
     const handleRChange = async (event) => {
         if (event.target.value === "") {
             setMessage("Вы не выбрали R!!!");
@@ -142,7 +124,7 @@ const Inputs = ({ x, y, r, points }) => {
         return () => {
             svg.removeEventListener("click", drawPoint);
         };
-    }, [r, isRadiusSelected, check, dispatch, flag, y, updateSVG]);
+    }, [check, updateSVG]);
 
     const calculator = (x, y, r) => {
         const width = 400;
@@ -151,7 +133,6 @@ const Inputs = ({ x, y, r, points }) => {
         const centerY = height / 2;
         const cx = centerX + x * (width / (3.3 * r));
         const cy = centerY - y * (height / (3.3 * r));
-        console.log('Calculator - cx, cy:', cx, cy);
         check(x, y, r);
         setRound(cx, cy, flag);
     }
@@ -259,10 +240,4 @@ const Inputs = ({ x, y, r, points }) => {
         </Container>
     );
 };
-const mapStateToProps = (state) => ({
-    x: state.x,
-    y: state.y,
-    r: state.r,
-    points: state.points,
-});
-export default connect(mapStateToProps)(Inputs);
+export default Inputs;

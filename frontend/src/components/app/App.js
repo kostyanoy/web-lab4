@@ -1,13 +1,14 @@
 import React from 'react';
-import {BrowserRouter as Router, Routes, Route, Navigate} from 'react-router-dom';
-import LoginPage from '../login/login';
-import MainPage from '../mainPage/mainPage';
-import Clock from "../clock/clock";
-import Description from "../description/description";
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import LoginPage from '../login/Login';
+import MainPage from '../mainPage/MainPage';
+import Clock from '../clock/Clock';
+import Description from '../description/Description';
 import './App.css';
-import {connect} from "react-redux";
 
-function App({authStatus}) {
+function App() {
+    const authStatus = useSelector((state) => state.authStatus);
     return (
         <Router>
             <Routes>
@@ -21,21 +22,10 @@ function App({authStatus}) {
                         </>
                     }
                 />
-                <Route
-                    path="/main"
-                    element={
-                        authStatus ? <MainPage /> : <Navigate to="/" />
-                    }
-                />
+                <Route path="/main" element={authStatus ? <MainPage /> : <Navigate to="/" />} />
             </Routes>
         </Router>
     );
 }
-const appProps = (state) => {
-    return {
-        authStatus: state.authStatus
-    };
-};
-export default connect(appProps)(App);
 
-
+export default App;

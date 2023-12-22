@@ -1,7 +1,7 @@
 import React from 'react';
 import './mainPage.css';
-import Inputs from "../inputs/inputs";
-import Table from "../table/table";
+import Inputs from "../inputs/Inputs";
+import Table from "../table/Table";
 const MainPage = () => {
     return (
         <div>

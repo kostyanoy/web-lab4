@@ -35,7 +35,6 @@
         padding: 20px;
     }
 }
-
 /* Мобильный режим */
 @media (max-width: 814px) {
     .clock {
