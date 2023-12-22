@@ -84,13 +84,3 @@ export const resetPoints = () => {
         }
     }
 };
-export const saveStateToLocalStorage = () => {
-    return (dispatch, getState) => {
-        try {
-            const stateToSave = getState();
-            localStorage.setItem("reduxState", JSON.stringify(stateToSave));
-        } catch (error) {
-            console.error("Ошибка сохранения состояния в localStorage:", error);
-        }
-    };
-};

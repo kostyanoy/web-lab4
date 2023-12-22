@@ -1,5 +1,5 @@
 import {useDispatch, useSelector} from "react-redux";
-import {setX, setY, setR, sendPoints, resetPoints, getPoints, logoutAuth, saveStateToLocalStorage} from "../../redux/actions/pointsActions";
+import {setX, setY, setR, sendPoints, resetPoints, getPoints, logoutAuth} from "../../redux/actions/pointsActions";
 import {StyledFormControl, StyledFormLabel, StyledRadioGroup, StyledFormControlLabel, StyledRadio, Container, StyledTextField, StyledButton, Message, ButtonContainer,} from "./inputsStyles";
 import React, {useEffect, useState} from "react";
 import {useAuth} from "../../services/auth";
@@ -70,20 +70,21 @@ const Inputs = () => {
             calculator(x, y, r);
         });
     };
-    const handleDelete = async () => {
-        clearSVG();
-        await dispatch(resetPoints());
-        setMessage("Точки удалены");
-        await dispatch(saveStateToLocalStorage());
-    };
-
     const handleLogout = async () => {
         clearSVG();
-        dispatch(saveStateToLocalStorage());
         dispatch(logoutAuth());
         await auth.logout();
         navigate("/");
     };
+    const handleDelete = async () => {
+        clearSVG();
+        await dispatch(resetPoints());
+        setMessage("Точки удалены");
+        setTimeout(() => {
+            setMessage("");
+        }, 3000);
+    };
+
 
     let flag;
     function check(x, y, r) {
@@ -94,7 +95,16 @@ const Inputs = () => {
             (x >= 0 && y <= 0 && isInsideRhombus(x, y, r / 2, r / 2)) ||
             (x <= 0 && y <= 0 && isInsideRectangle(x, y, r, r));
     }
-
+    const calculator = (x, y, r) => {
+        const width = 400;
+        const height = 400;
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const cx = centerX + x * (width / (3.3 * r));
+        const cy = centerY - y * (height / (3.3 * r));
+        check(x, y, r);
+        setRound(cx, cy, flag);
+    }
     useEffect(() => {
         const svg = document.querySelector("svg");
         const getXY = (svg, event) => {
@@ -124,18 +134,9 @@ const Inputs = () => {
         return () => {
             svg.removeEventListener("click", drawPoint);
         };
-    }, [check, updateSVG]);
+    }, [check, updateSVG, calculator, dispatch, isRadiusSelected, r]);
 
-    const calculator = (x, y, r) => {
-        const width = 400;
-        const height = 400;
-        const centerX = width / 2;
-        const centerY = height / 2;
-        const cx = centerX + x * (width / (3.3 * r));
-        const cy = centerY - y * (height / (3.3 * r));
-        check(x, y, r);
-        setRound(cx, cy, flag);
-    }
+
     const setRound = (cx, cy, flag) => {
         const svg = document.querySelector("svg");
         const circle = document.createElementNS(
